@@ -33,7 +33,6 @@ app.get('/weather', (request, response, next) => {
     let lon = request.query.lon;
     let searchQuery = request.query.searchQuery;
     let foundCity = data.find(city => city.city_name.toLowerCase() === searchQuery.toLowerCase());
-=
 
 if(foundCity) { 
     let weatherForecast = foundCity.data.map(date => new Forecast(date));
@@ -45,7 +44,6 @@ if(foundCity) {
     next(error);
   }
 });
-
 
 class Forecast {
   constructor(cityObj){
