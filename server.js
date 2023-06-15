@@ -4,7 +4,7 @@ const express = require('express');
 require('dotenv').config();
 const cors = require('cors');
 
-let data = require('./data/data.json');
+let data = require('./data/weather.json');
 
 const app = express();
 
@@ -29,14 +29,23 @@ app.get('/hello', (request, response) => {
 app.get('/weather', (request, response, next) => {
   try {
 
-    let queriedDescription = request.query.description;
-    let foundDescription = data.find(city => city.description === queriedDescription);
-    let descriptionToSend = new Forecast(foundDescription);
-    response.status(200).send(descriptionToSend);
+    let lat = request.query.lat;
+    let lon = request.query.lon;
+    let searchQuery = request.query.searchQuery;
+    let foundCity = data.find(city => city.city_name.toLowerCase() === searchQuery.toLowerCase());
+=
+
+if(foundCity) { 
+    let weatherForecast = foundCity.data.map(date => new Forecast(date));
+    response.status(200).send(weatherForecast);
+} else {
+  response.status(404).send('CANNOT BE FOUND');
+}
   } catch (error) {
     next(error);
   }
 });
+
 
 class Forecast {
   constructor(cityObj){
@@ -53,3 +62,5 @@ app.use((error, request, response, next) => {
   console.log(error.message)
   response.status(500).send(error.message)
 });
+
+//Part of code taken from Code Review from Jennifer Sung
